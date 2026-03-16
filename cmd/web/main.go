@@ -1,21 +1,23 @@
 package main
 
 import (
+	"kisisel-blog/internal/handlers" // Go modül adına göre import (go.mod'da ne yazıyorsa o)
 	"log"
 	"net/http"
 	"time"
 )
 
 func main() {
-	// Gelen HTTP isteklerini yönlendirecek router (mux) nesnemiz
 	mux := http.NewServeMux()
 
-	// Şimdilik ana sayfa için test amaçlı basit bir yanıt döndürüyoruz
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Güvenli Kisisel Blog Sistemine Hos Geldiniz!"))
-	})
+	// Statik dosyaları (CSS, JS, Görseller) güvenli bir şekilde sunma
+	// http.Dir ile belirlediğimiz klasör dışına çıkılmasını engelliyoruz (Path Traversal koruması)
+	fileServer := http.FileServer(http.Dir("./ui/static/"))
+	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	// Güvenlik odaklı özel sunucu yapılandırması
+	// Rotalarımız
+	mux.HandleFunc("/", handlers.Home)
+
 	srv := &http.Server{
 		Addr:         ":4000",
 		Handler:      mux,
@@ -24,9 +26,7 @@ func main() {
 		WriteTimeout: 10 * time.Second,
 	}
 
-	log.Println("Sunucu :4000 portunda güvenli bir şekilde başlatılıyor...")
-
-	// Sunucuyu ayağa kaldırıyoruz, hata olursa uygulamayı durdurup log basıyoruz
+	log.Println("Sunucu :4000 portunda başlatılıyor...")
 	err := srv.ListenAndServe()
 	log.Fatal(err)
 }
