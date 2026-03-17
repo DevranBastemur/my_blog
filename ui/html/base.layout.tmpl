@@ -36,7 +36,33 @@
         <p>&copy; 2026 Devryan. Tüm hakları saklıdır.</p>
     </footer>
 
-    <script src="/static/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.querySelector('.bg-animation-container');
+            const logo = document.querySelector('.floating-logo');
+
+            if (!container || !logo) return;
+
+            let x = Math.random() * (container.clientWidth - logo.clientWidth);
+            let y = Math.random() * (container.clientHeight - logo.clientHeight);
+            let dx = (Math.random() - 0.5) * 1.5; // Hız ayarı
+            let dy = (Math.random() - 0.5) * 1.5;
+
+            function animate() {
+                x += dx;
+                y += dy;
+
+                // Ekran sınırlarına çarpıp sekme
+                if (x + logo.clientWidth > container.clientWidth || x < 0) { dx = -dx; }
+                if (y + logo.clientHeight > container.clientHeight || y < 0) { dy = -dy; }
+
+                logo.style.transform = `translate(${x}px, ${y}px)`;
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        });
+    </script>
 </body>
 </html>
 {{end}}
