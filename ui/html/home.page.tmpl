@@ -1,14 +1,35 @@
 {{template "base" .}}
 {{define "title"}}Ana Sayfa{{end}}
 {{define "main"}}
-    <h2 style="color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem;">Son Yazılar</h2>
+    <h2 class="section-title">>_ SİSTEME EKLENEN SON VERİLER</h2>
     
     {{if .Blogs}}
         {{range .Blogs}}
-        <article class="blog-card">
+        <article class="blog-card" id="blog-{{.ID}}">
             <h3>{{.Title}}</h3>
-            <span class="blog-date">{{.CreatedAt.Format "02 Jan 2006 - 15:04"}}</span>
+            <span class="blog-date">>>> SYS.DATE: {{.CreatedAt.Format "02 Jan 2006 - 15:04"}}</span>
             <p>{{.Content}}</p>
+            
+            <div class="comments-section">
+                <h4>[ KULLANICI YORUMLARI ]</h4>
+                {{if .Comments}}
+                    <ul class="comment-list">
+                        {{range .Comments}}
+                        <li class="comment-item">
+                            <span class="comment-date">[{{.CreatedAt.Format "02 Jan 15:04"}}]</span>
+                            <span class="comment-text">{{.Content}}</span>
+                        </li>
+                        {{end}}
+                    </ul>
+                {{else}}
+                    <p class="no-comments">Henüz dış bağlantı kaydı yok. İlk veri aktaran sen ol.</p>
+                {{end}}
+                <form action="/comment" method="POST" class="comment-form">
+                    <input type="hidden" name="blog_id" value="{{.ID}}">
+                    <input type="text" name="content" placeholder="Sisteme iz bırak..." required>
+                    <button type="submit" class="btn btn-sm">Gönder</button>
+                </form>
+            </div>
         </article>
         {{end}}
     {{else}}

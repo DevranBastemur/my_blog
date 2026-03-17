@@ -30,6 +30,18 @@ func main() {
 		log.Fatal(err)
 	}
 
+	createCommentsSQL := `CREATE TABLE IF NOT EXISTS comments (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		blog_id INTEGER NOT NULL,
+		content TEXT NOT NULL,
+		created_at DATETIME NOT NULL,
+		FOREIGN KEY (blog_id) REFERENCES blogs(id) ON DELETE CASCADE
+	);`
+	_, err = db.Exec(createCommentsSQL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	app := &handlers.App{
 		Blogs: &models.BlogModel{DB: db},
 	}
@@ -47,9 +59,11 @@ func main() {
 			app.LoginPost(w, r)
 		}
 	})
+	mux.HandleFunc("/comment", app.AddComment)
 	mux.HandleFunc("/admin", app.AdminDashboard)
 	mux.HandleFunc("/admin/post", app.CreatePost)
 	mux.HandleFunc("/admin/delete", app.DeletePost)
+	mux.HandleFunc("/admin/delete-comment", app.DeleteCommentAdmin)
 	mux.HandleFunc("/logout", app.Logout)
 
 	srv := &http.Server{

@@ -50,4 +50,36 @@
         <p style="color: var(--text-muted);">Sistemde henüz yayınlanmış bir yazı bulunmuyor.</p>
     {{end}}
 </div>
+
+<div class="admin-section">
+    <h3 style="margin-top:0; color:var(--primary);">Yorumları Yönet</h3>
+    {{if .Comments}}
+        <div style="overflow-x:auto;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Tarih</th>
+                        <th>Blog Başlığı</th>
+                        <th>Yorum İçeriği</th>
+                        <th style="text-align:right;">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .Comments}}
+                    <tr>
+                        <td style="color: var(--text-muted);">{{.CreatedAt.Format "02.01 15:04"}}</td>
+                        <td style="font-weight: 500; color: var(--accent);">{{.BlogTitle}}</td>
+                        <td>{{.Content}}</td>
+                        <td style="text-align:right;">
+                            <a href="/admin/delete-comment?id={{.ID}}" class="btn btn-sm btn-danger" onclick="return confirm('Bu yorumu kalıcı olarak silmek istediğine emin misin?');">Sil</a>
+                        </td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+    {{else}}
+        <p style="color: var(--text-muted);">Sistemde henüz bir kullanıcı yorumu bulunmuyor.</p>
+    {{end}}
+</div>
 {{end}}

@@ -195,6 +195,91 @@ input:focus, textarea:focus {
 .admin-table th { color: var(--primary); font-family: var(--font-mono); font-weight: 500; }
 .admin-table td { font-family: var(--font-mono); font-size: 0.9rem; }
 
+/* YENİ: Başlıklar ve Giriş Ekranı */
+.section-title {
+    color: var(--primary);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    text-shadow: 0 0 8px var(--primary-glow);
+}
+
+.cyber-login {
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 3rem;
+    background: #050505;
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.1), inset 0 0 20px rgba(0, 255, 0, 0.05);
+    border-radius: 4px;
+    text-align: center;
+    position: relative;
+}
+
+.cyber-login::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary);
+}
+
+.error-box {
+    background: rgba(255, 0, 51, 0.1);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-mono);
+    box-shadow: 0 0 10px rgba(255, 0, 51, 0.3);
+}
+
+/* YENİ: Yorum Sistemi Tasarımı */
+.comments-section {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--border);
+}
+
+.comments-section h4 {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.comment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+}
+
+.comment-item {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(0, 255, 0, 0.03);
+    border-left: 2px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+.comment-date { color: var(--accent); margin-right: 0.5rem; }
+.comment-text { color: var(--text-main); }
+
+.comment-form { display: flex; gap: 10px; }
+.comment-form input { flex: 1; padding: 0.5rem 1rem; }
+
+.no-comments {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
 footer {
     text-align: center;
     padding: 2rem;

@@ -17,8 +17,9 @@ type App struct {
 
 // Şablonlara veri göndermek için kullanacağımız yapı
 type TemplateData struct {
-	Blogs []*models.BlogPost
-	Error string
+	Blogs    []*models.BlogPost
+	Comments []*models.Comment
+	Error    string
 }
 
 var (
@@ -59,7 +60,7 @@ func (app *App) Home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) LoginPage(w http.ResponseWriter, r *http.Request) {
-	renderTemplate(w, "login.page.tmpl", nil)
+	renderTemplate(w, "login.page.tmpl", &TemplateData{})
 }
 
 func (app *App) LoginPost(w http.ResponseWriter, r *http.Request) {
@@ -129,7 +130,12 @@ func (app *App) AdminDashboard(w http.ResponseWriter, r *http.Request) {
 		log.Println("DB okuma hatası:", err)
 	}
 
-	renderTemplate(w, "admin.page.tmpl", &TemplateData{Blogs: blogs})
+	comments, err := app.Blogs.GetAllComments()
+	if err != nil {
+		log.Println("Yorum okuma hatası:", err)
+	}
+
+	renderTemplate(w, "admin.page.tmpl", &TemplateData{Blogs: blogs, Comments: comments})
 }
 
 func (app *App) CreatePost(w http.ResponseWriter, r *http.Request) {
@@ -170,6 +176,47 @@ func (app *App) DeletePost(w http.ResponseWriter, r *http.Request) {
 		log.Println("Silme hatası:", err)
 	}
 
+	http.Redirect(w, r, "/admin", http.StatusSeeOther)
+}
+
+func (app *App) AddComment(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Metod izin verilmiyor", http.StatusMethodNotAllowed)
+		return
+	}
+
+	r.ParseForm()
+	blogIDStr := r.FormValue("blog_id")
+	content := r.FormValue("content")
+
+	blogID, err := strconv.Atoi(blogIDStr)
+	if err != nil || content == "" {
+		http.Redirect(w, r, "/", http.StatusBadRequest)
+		return
+	}
+
+	err = app.Blogs.InsertComment(blogID, content)
+	if err != nil {
+		log.Println("Yorum ekleme hatası:", err)
+	}
+
+	http.Redirect(w, r, "/#blog-"+blogIDStr, http.StatusSeeOther)
+}
+
+func (app *App) DeleteCommentAdmin(w http.ResponseWriter, r *http.Request) {
+	if !isAuthenticated(r) {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	idStr := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(idStr)
+	if err == nil && id > 0 {
+		err = app.Blogs.DeleteComment(id)
+		if err != nil {
+			log.Println("Yorum silme hatası:", err)
+		}
+	}
 	http.Redirect(w, r, "/admin", http.StatusSeeOther)
 }
 
