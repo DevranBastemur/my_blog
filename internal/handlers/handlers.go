@@ -5,6 +5,10 @@ import (
 	"kisisel-blog/internal/models"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
 )
 
 type App struct {
@@ -15,6 +19,26 @@ type App struct {
 type TemplateData struct {
 	Blogs []*models.BlogPost
 	Error string
+}
+
+var (
+	failedAttempts = make(map[string]int)
+	lockoutExpiry  = make(map[string]time.Time)
+	authMutex      sync.Mutex
+)
+
+func getIP(r *http.Request) string {
+	ip := r.Header.Get("X-Real-Ip")
+	if ip == "" {
+		ip = r.Header.Get("X-Forwarded-For")
+	}
+	if ip == "" {
+		ip = r.RemoteAddr
+		if colon := strings.LastIndex(ip, ":"); colon != -1 {
+			ip = ip[:colon]
+		}
+	}
+	return ip
 }
 
 func (app *App) Home(w http.ResponseWriter, r *http.Request) {
@@ -45,8 +69,33 @@ func (app *App) LoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Basit bir güvenlik önlemi (Hardcoded parola, eğitim/proje için uygundur)
-	if r.FormValue("password") == "admin123" {
+	ip := getIP(r)
+
+	authMutex.Lock()
+	// Kilit kontrolü
+	if expiry, exists := lockoutExpiry[ip]; exists {
+		if time.Now().Before(expiry) {
+			authMutex.Unlock()
+			remaining := int(time.Until(expiry).Minutes()) + 1
+			renderTemplate(w, "login.page.tmpl", &TemplateData{Error: "Çok fazla hatalı deneme! Sistem " + strconv.Itoa(remaining) + " dakika kilitlendi."})
+			return
+		} else {
+			// Kilit süresi dolmuş, sıfırla
+			delete(lockoutExpiry, ip)
+			delete(failedAttempts, ip)
+		}
+	}
+	authMutex.Unlock()
+
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+
+	if username == "admin" && password == "admin123" {
+		authMutex.Lock()
+		delete(failedAttempts, ip)
+		delete(lockoutExpiry, ip)
+		authMutex.Unlock()
+
 		// Güvenli Cookie oluştur (XSS korumalı)
 		cookie := http.Cookie{Name: "auth", Value: "true", Path: "/", HttpOnly: true}
 		http.SetCookie(w, &cookie)
@@ -54,7 +103,18 @@ func (app *App) LoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	renderTemplate(w, "login.page.tmpl", &TemplateData{Error: "Hatalı parola!"})
+	authMutex.Lock()
+	failedAttempts[ip]++
+	attemptsLeft := 5 - failedAttempts[ip]
+	errMsg := "Hatalı giriş! Kalan deneme hakkı: " + strconv.Itoa(attemptsLeft)
+
+	if failedAttempts[ip] >= 5 {
+		lockoutExpiry[ip] = time.Now().Add(5 * time.Minute)
+		errMsg = "Çok fazla hatalı deneme! Sistem 5 dakika kilitlendi."
+	}
+	authMutex.Unlock()
+
+	renderTemplate(w, "login.page.tmpl", &TemplateData{Error: errMsg})
 }
 
 func (app *App) AdminDashboard(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +122,14 @@ func (app *App) AdminDashboard(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
-	renderTemplate(w, "admin.page.tmpl", nil)
+
+	// Admin paneline tüm yazıları yolla
+	blogs, err := app.Blogs.All()
+	if err != nil {
+		log.Println("DB okuma hatası:", err)
+	}
+
+	renderTemplate(w, "admin.page.tmpl", &TemplateData{Blogs: blogs})
 }
 
 func (app *App) CreatePost(w http.ResponseWriter, r *http.Request) {
@@ -85,6 +152,27 @@ func (app *App) CreatePost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
+func (app *App) DeletePost(w http.ResponseWriter, r *http.Request) {
+	if !isAuthenticated(r) {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	idStr := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil || id < 1 {
+		http.Error(w, "Geçersiz ID", http.StatusBadRequest)
+		return
+	}
+
+	err = app.Blogs.Delete(id)
+	if err != nil {
+		log.Println("Silme hatası:", err)
+	}
+
+	http.Redirect(w, r, "/admin", http.StatusSeeOther)
+}
+
 func (app *App) Logout(w http.ResponseWriter, r *http.Request) {
 	cookie := http.Cookie{Name: "auth", Value: "", Path: "/", MaxAge: -1}
 	http.SetCookie(w, &cookie)
@@ -102,8 +190,8 @@ func isAuthenticated(r *http.Request) bool {
 
 func renderTemplate(w http.ResponseWriter, tmpl string, data *TemplateData) {
 	files := []string{
-		"./ui/html/" + tmpl,
 		"./ui/html/base.layout.tmpl",
+		"./ui/html/" + tmpl,
 	}
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
@@ -111,7 +199,7 @@ func renderTemplate(w http.ResponseWriter, tmpl string, data *TemplateData) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	err = ts.Execute(w, data)
+	err = ts.ExecuteTemplate(w, "base", data)
 	if err != nil {
 		log.Println("Şablon execute hatası:", err)
 	}

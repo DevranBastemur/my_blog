@@ -1,19 +1,53 @@
 {{template "base" .}}
-{{define "title"}}Admin Panel{{end}}
+{{define "title"}}Admin Paneli{{end}}
 {{define "main"}}
-    <h2>Yeni İçerik Ekle</h2>
-    <div style="background-color: var(--bg-card); padding: 2rem; border-radius: 8px; border: 1px solid var(--border);">
-        <form action="/admin/post" method="POST">
-            <div class="form-group">
-                <label>Başlık</label>
-                <input type="text" name="title" required autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label>İçerik</label>
-                <textarea name="content" rows="10" required></textarea>
-            </div>
-            <button type="submit">Yayınla</button>
-            <a href="/logout" style="float: right; color: #ef4444; text-decoration: none; margin-top: 10px;">Çıkış Yap</a>
-        </form>
-    </div>
+<div class="admin-header">
+    <h2 style="margin: 0;">Admin Kontrol Paneli</h2>
+    <a href="/logout" class="btn btn-danger">Çıkış Yap</a>
+</div>
+
+<div class="admin-section">
+    <h3 style="margin-top:0; color:var(--primary);">Yeni Yazı Ekle</h3>
+    <form action="/admin/post" method="POST">
+        <div class="form-group">
+            <label for="title">Blog Başlığı</label>
+            <input type="text" id="title" name="title" placeholder="Harika bir başlık düşün..." required>
+        </div>
+        <div class="form-group">
+            <label for="content">Yazı İçeriği</label>
+            <textarea id="content" name="content" rows="6" placeholder="İçeriğini buraya yazabilirsin..." required></textarea>
+        </div>
+        <button type="submit" class="btn">Yazıyı Yayımla</button>
+    </form>
+</div>
+
+<div class="admin-section">
+    <h3 style="margin-top:0; color:var(--primary);">Mevcut Yazıları Yönet</h3>
+    {{if .Blogs}}
+        <div style="overflow-x:auto;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Başlık</th>
+                        <th>Yayımlanma Tarihi</th>
+                        <th style="text-align:right;">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .Blogs}}
+                    <tr>
+                        <td style="font-weight: 500;">{{.Title}}</td>
+                        <td style="color: var(--text-muted);">{{.CreatedAt.Format "02.01.2006 15:04"}}</td>
+                        <td style="text-align:right;">
+                            <a href="/admin/delete?id={{.ID}}" class="btn btn-sm btn-danger" onclick="return confirm('Bu yazıyı silmek istediğine emin misin? Bu işlem geri alınamaz.');">Sil</a>
+                        </td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+    {{else}}
+        <p style="color: var(--text-muted);">Sistemde henüz yayınlanmış bir yazı bulunmuyor.</p>
+    {{end}}
+</div>
 {{end}}

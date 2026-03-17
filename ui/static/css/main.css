@@ -1,26 +1,32 @@
 :root {
-    --bg-dark: #09090b;
-    --bg-card: #18181b;
-    --primary: #10b981;
-    --primary-glow: rgba(16, 185, 129, 0.2);
-    --text-main: #f4f4f5;
-    --text-muted: #a1a1aa;
-    --border: #27272a;
+    --bg-dark: #050505;
+    --bg-card: #0d0d0d;
+    --primary: #00ff00;
+    --primary-glow: rgba(0, 255, 0, 0.4);
+    --accent: #008800;
+    --text-main: #e0e0e0;
+    --text-muted: #666666;
+    --border: #1a331a;
+    --danger: #ff0033;
+    --font-mono: 'Courier New', Courier, monospace;
 }
 
 body {
     background-color: var(--bg-dark);
+    background-image: radial-gradient(circle at center, #0a110a 0%, #050505 100%);
     color: var(--text-main);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
     line-height: 1.6;
+    min-height: 100vh;
 }
 
 header {
-    background-color: rgba(9, 9, 11, 0.8);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
+    background-color: rgba(5, 5, 5, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--border);
     padding: 1rem 5%;
     display: flex;
     justify-content: space-between;
@@ -28,15 +34,34 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
+    box-shadow: 0 4px 20px rgba(0, 255, 0, 0.1);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+header h1 {
+    margin: 0;
 }
 
 header h1 a {
     color: var(--primary);
-    text-decoration: none;
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: 1px;
     text-shadow: 0 0 10px var(--primary-glow);
+    text-decoration: none;
+    font-size: 1.6rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    letter-spacing: 2px;
 }
 
 nav a {
@@ -51,6 +76,12 @@ nav a:hover {
     color: var(--primary);
 }
 
+.nav-admin {
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    color: var(--primary);
+}
+
 main {
     padding: 3rem 5%;
     max-width: 900px;
@@ -62,21 +93,24 @@ main {
 .blog-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    border-left: 3px solid var(--primary);
+    border-radius: 4px;
+    padding: 2rem;
+    margin-bottom: 2rem;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .blog-card:hover {
     transform: translateY(-2px);
     border-color: var(--primary);
-    box-shadow: 0 4px 20px var(--primary-glow);
+    box-shadow: 0 0 15px var(--primary-glow);
 }
 
 .blog-card h3 {
     margin-top: 0;
+    font-size: 1.5rem;
     color: var(--primary);
+    font-family: var(--font-mono);
 }
 
 .blog-date {
@@ -84,9 +118,9 @@ main {
     color: var(--text-muted);
     margin-bottom: 1rem;
     display: block;
+    font-family: var(--font-mono);
 }
 
-/* Formlar (Admin & Login) */
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -94,45 +128,79 @@ main {
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: var(--text-muted);
+    color: var(--text-main);
+    font-family: var(--font-mono);
 }
 
 input[type="text"], input[type="password"], textarea {
     width: 100%;
-    padding: 0.75rem;
-    background-color: var(--bg-dark);
+    padding: 1rem;
+    background-color: #000;
     border: 1px solid var(--border);
-    color: var(--text-main);
+    color: var(--primary);
     border-radius: 4px;
-    font-family: inherit;
+    font-family: var(--font-mono);
     box-sizing: border-box;
+    transition: border-color 0.3s ease;
 }
 
 input:focus, textarea:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 2px var(--primary-glow);
+    box-shadow: 0 0 10px var(--primary-glow);
 }
 
-button {
-    background-color: var(--primary);
-    color: var(--bg-dark);
-    border: none;
-    padding: 0.75rem 1.5rem;
+.btn, button {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    padding: 0.75rem 2rem;
     font-weight: 600;
     border-radius: 4px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 1px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: opacity 0.3s, transform 0.2s;
+    text-decoration: none;
+    display: inline-block;
 }
 
-button:hover {
-    background-color: #059669;
+.btn:hover, button:hover {
+    background: var(--primary-glow);
+    box-shadow: 0 0 15px var(--primary-glow);
 }
+
+.btn-danger {
+    background: transparent;
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+.btn-danger:hover {
+    background: rgba(255, 0, 51, 0.2);
+    box-shadow: 0 0 15px rgba(255, 0, 51, 0.4);
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+/* Admin Tablo Stilleri */
+.admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.admin-section { background-color: var(--bg-card); padding: 2rem; border-radius: 4px; border: 1px solid var(--border); border-top: 3px solid var(--primary); margin-bottom: 2rem; }
+.admin-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+.admin-table th, .admin-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+.admin-table th { color: var(--primary); font-family: var(--font-mono); font-weight: 500; }
+.admin-table td { font-family: var(--font-mono); font-size: 0.9rem; }
 
 footer {
     text-align: center;
     padding: 2rem;
     border-top: 1px solid var(--border);
     color: var(--text-muted);
+    font-family: var(--font-mono);
     font-size: 0.9rem;
+    margin-top: 2rem;
 }

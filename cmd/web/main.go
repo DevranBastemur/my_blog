@@ -49,6 +49,7 @@ func main() {
 	})
 	mux.HandleFunc("/admin", app.AdminDashboard)
 	mux.HandleFunc("/admin/post", app.CreatePost)
+	mux.HandleFunc("/admin/delete", app.DeletePost)
 	mux.HandleFunc("/logout", app.Logout)
 
 	srv := &http.Server{

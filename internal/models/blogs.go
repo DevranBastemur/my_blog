@@ -59,3 +59,31 @@ func (m *BlogModel) Latest() ([]*BlogPost, error) {
 
 	return blogs, nil
 }
+
+// Tüm blog yazılarını çekme (Admin panelinde tablo olarak listelemek için)
+func (m *BlogModel) All() ([]*BlogPost, error) {
+	stmt := `SELECT id, title, content, created_at FROM blogs ORDER BY created_at DESC`
+	rows, err := m.DB.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var blogs []*BlogPost
+	for rows.Next() {
+		b := &BlogPost{}
+		err = rows.Scan(&b.ID, &b.Title, &b.Content, &b.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		blogs = append(blogs, b)
+	}
+	return blogs, nil
+}
+
+// ID'sine göre blog yazısını silme
+func (m *BlogModel) Delete(id int) error {
+	stmt := `DELETE FROM blogs WHERE id = ?`
+	_, err := m.DB.Exec(stmt, id)
+	return err
+}

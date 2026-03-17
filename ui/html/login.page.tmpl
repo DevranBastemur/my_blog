@@ -1,19 +1,23 @@
 {{template "base" .}}
-{{define "title"}}Admin Girişi{{end}}
+{{define "title"}}Sistem Girişi{{end}}
 {{define "main"}}
-    <div style="max-width: 400px; margin: 0 auto; background-color: var(--bg-card); padding: 2rem; border-radius: 8px; border: 1px solid var(--border);">
-        <h2 style="text-align: center; margin-top: 0;">Sistem Girişi</h2>
-        {{if .Error}}
-            <div style="background-color: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; border: 1px solid #ef4444;">
-                {{.Error}}
-            </div>
-        {{end}}
-        <form action="/login" method="POST">
-            <div class="form-group">
-                <label>Parola</label>
-                <input type="password" name="password" required>
-            </div>
-            <button type="submit" style="width: 100%;">Giriş Yap</button>
-        </form>
-    </div>
+<div class="admin-section" style="max-width: 450px; margin: 2rem auto; text-align:center;">
+    <h2 style="color: var(--primary); margin-top:0;">DevryanBlog Admin</h2>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">İçerik yönetimi için lütfen giriş yapın.</p>
+    
+    {{if .Error}}<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">{{.Error}}</div>{{end}}
+    
+    <form action="/login" method="POST" style="text-align: left;">
+        <div class="form-group">
+            <label for="username">Kullanıcı Adı</label>
+            <input type="text" id="username" name="username" placeholder="admin" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Yönetici Parolası</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn" style="width: 100%;">Giriş Yap</button>
+    </form>
+    <p style="margin-top: 2rem; font-size: 0.85rem;"><a href="/" style="color: var(--text-muted);">← Ana Sayfaya Dön</a></p>
+</div>
 {{end}}

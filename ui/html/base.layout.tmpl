@@ -4,27 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{template "title" .}} - Devran Blog</title>
-    <title>{{block "title" .}}Sayfa Bulunamadı{{end}} - Devran Blog</title>
+    <title>{{block "title" .}}Sayfa Bulunamadı{{end}} - DevryanBlog</title>
     <link rel="stylesheet" href="/static/css/main.css">
 </head>
 <body>
     <header>
-        <h1><a href="/">Terminal | Kisisel Blog</a></h1>
+        <div class="brand">
+            <!-- Kendi logonu projeye ui/static/img/logo.png olarak kaydedebilirsin -->
+            <img src="/static/img/logo.png" alt="" class="logo-img" onerror="this.style.display='none'">
+            <h1><a href="/">DevryanBlog</a></h1>
+        </div>
         <nav>
             <a href="/">Ana Sayfa</a>
-            <a href="/hakkimda">Hakkımda</a>
-            </nav>
+            <a href="/admin" class="nav-admin">Admin</a>
         </nav>
     </header>
 
     <main>
-        {{template "main" .}}
         {{block "main" .}}<p>İçerik yüklenirken bir sorun oluştu.</p>{{end}}
     </main>
 
     <footer>
-        <p>&copy; 2026 Devran. Güvenli kodlama prensipleriyle geliştirilmiştir.</p>
+        <p>&copy; 2026 Devryan. Tüm hakları saklıdır.</p>
     </footer>
 </body>
 </html>
