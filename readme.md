@@ -71,7 +71,8 @@ Yöneticinin içeriklere müdahale ettiği, sildiği veya güncellediği güvenl
 ![Yeni Yazı Ekleme](Ekran görüntüsü 2026-03-17 224757.png)
 
 - **İçerik ve Yorum Yönetimi:** Sistemdeki tüm yazıları ve kullanıcı yorumlarını tek ekrandan kontrol etme.
-![İçerik Yönetimi](Ekran görüntüsü 2026-03-17 224808.png)
+![İçerik Yönetimi] <img width="1142" height="743" alt="Ekran görüntüsü 2026-03-17 224808" src="https://github.com/user-attachments/assets/3ca427e0-a7ba-4280-8466-c6d0c61127d7" />
+
 
 ### 3. Güvenlik ve Kimlik Doğrulama
 Sistemin kalbi olan admin girişi, yetkisiz erişimlere karşı katı kurallarla korunmaktadır.
@@ -82,7 +83,6 @@ Sistemin kalbi olan admin girişi, yetkisiz erişimlere karşı katı kurallarla
 
 ![Admin Login] <img width="790" height="674" alt="Ekran görüntüsü 2026-03-17 224904" src="https://github.com/user-attachments/assets/2d50f06a-096f-4b8e-992c-3a80e1c12c50" />
  
-*(Yukarıdaki alana "Hatalı giriş! Kalan deneme hakkı: 4" uyarısını gösteren login ekranını ekleyebilirsin)*
 
 ---
 
