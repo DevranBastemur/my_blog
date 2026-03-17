@@ -1,0 +1,19 @@
+{{template "base" .}}
+{{define "title"}}Admin Panel{{end}}
+{{define "main"}}
+    <h2>Yeni İçerik Ekle</h2>
+    <div style="background-color: var(--bg-card); padding: 2rem; border-radius: 8px; border: 1px solid var(--border);">
+        <form action="/admin/post" method="POST">
+            <div class="form-group">
+                <label>Başlık</label>
+                <input type="text" name="title" required autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label>İçerik</label>
+                <textarea name="content" rows="10" required></textarea>
+            </div>
+            <button type="submit">Yayınla</button>
+            <a href="/logout" style="float: right; color: #ef4444; text-decoration: none; margin-top: 10px;">Çıkış Yap</a>
+        </form>
+    </div>
+{{end}}

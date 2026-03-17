@@ -9,42 +9,47 @@ import (
 	"kisisel-blog/internal/handlers"
 	"kisisel-blog/internal/models"
 
-	_ "modernc.org/sqlite" // SQLite sürücüsü (alt çizgi ile sadece init fonksiyonunu tetikliyoruz)
+	_ "modernc.org/sqlite"
 )
 
 func main() {
-	// Veritabanı bağlantısını aç (Eğer dosya yoksa otomatik oluşturur)
 	db, err := sql.Open("sqlite", "./blog.db")
 	if err != nil {
-		log.Fatal("Veritabanı açılamadı:", err)
+		log.Fatal(err)
 	}
 	defer db.Close()
 
-	// Tablomuzu oluştur (Eğer daha önce oluşturulmadıysa)
 	createTableSQL := `CREATE TABLE IF NOT EXISTS blogs (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		title TEXT NOT NULL,
 		content TEXT NOT NULL,
 		created_at DATETIME NOT NULL
 	);`
-
 	_, err = db.Exec(createTableSQL)
 	if err != nil {
-		log.Fatal("Tablo oluşturulamadı:", err)
+		log.Fatal(err)
 	}
 
-	// Uygulama bağımlılıklarını (App struct) kur
 	app := &handlers.App{
 		Blogs: &models.BlogModel{DB: db},
 	}
 
 	mux := http.NewServeMux()
-
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	// Handler fonksiyonunu app üzerinden çağırıyoruz
+	// Rotalarımız
 	mux.HandleFunc("/", app.Home)
+	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			app.LoginPage(w, r)
+		} else if r.Method == http.MethodPost {
+			app.LoginPost(w, r)
+		}
+	})
+	mux.HandleFunc("/admin", app.AdminDashboard)
+	mux.HandleFunc("/admin/post", app.CreatePost)
+	mux.HandleFunc("/logout", app.Logout)
 
 	srv := &http.Server{
 		Addr:         ":4000",
@@ -55,6 +60,5 @@ func main() {
 	}
 
 	log.Println("Sunucu :4000 portunda başlatılıyor...")
-	err = srv.ListenAndServe()
-	log.Fatal(err)
+	log.Fatal(srv.ListenAndServe())
 }

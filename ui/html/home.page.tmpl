@@ -1,10 +1,17 @@
 {{template "base" .}}
-
 {{define "title"}}Ana Sayfa{{end}}
-
 {{define "main"}}
-    <section class="intro">
-        <h2>Sisteme Hoş Geldiniz</h2>
-        <p>Burası Go ile geliştirilmiş, siber güvenlik odaklı kişisel blog altyapısıdır. Blog yazıları yakında veritabanından çekilecek.</p>
-    </section>
+    <h2 style="color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem;">Son Yazılar</h2>
+    
+    {{if .Blogs}}
+        {{range .Blogs}}
+        <article class="blog-card">
+            <h3>{{.Title}}</h3>
+            <span class="blog-date">{{.CreatedAt.Format "02 Jan 2006 - 15:04"}}</span>
+            <p>{{.Content}}</p>
+        </article>
+        {{end}}
+    {{else}}
+        <p style="color: var(--text-muted);">Sistemde henüz bir kayıt bulunamadı...</p>
+    {{end}}
 {{end}}
