@@ -1,13 +1,11 @@
-# Derlenmi� dosyalar
+
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
 
-# Test ��kt�lar�
+
 *.test
 *.out
-
-# �evre de�i�kenleri
 .env
