@@ -319,3 +319,22 @@ footer {
     font-size: 0.9rem;
     margin-top: 2rem;
 }
+
+/* YENİ: Arka Plan Logo Animasyonu */
+.bg-animation-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* İçeriğin arkasında kalması için */
+    overflow: hidden;
+}
+
+.floating-logo {
+    position: absolute;
+    width: 200px; /* Logonun boyutu */
+    height: 200px;
+    opacity: 0.05; /* Logonun silikliği */
+    filter: blur(2px); /* Logoyu biraz bulanıklaştır */
+}
