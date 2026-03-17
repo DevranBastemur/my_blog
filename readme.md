@@ -80,8 +80,8 @@ Sistemin kalbi olan admin girişi, yetkisiz erişimlere karşı katı kurallarla
 - **Parola:** `admin123`
 - **Koruma Kalkanı:** 5 hatalı deneme sonrası IP/Oturum 20 dakika boyunca engellenir.
 
-![Admin Login](<img width="790" height="674" alt="Ekran görüntüsü 2026-03-17 224904" src="https://github.com/user-attachments/assets/2d50f06a-096f-4b8e-992c-3a80e1c12c50" />
-)
+![Admin Login] <img width="790" height="674" alt="Ekran görüntüsü 2026-03-17 224904" src="https://github.com/user-attachments/assets/2d50f06a-096f-4b8e-992c-3a80e1c12c50" />
+ 
 *(Yukarıdaki alana "Hatalı giriş! Kalan deneme hakkı: 4" uyarısını gösteren login ekranını ekleyebilirsin)*
 
 ---
