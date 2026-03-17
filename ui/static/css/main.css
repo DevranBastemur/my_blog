@@ -219,7 +219,6 @@ a.btn:hover, button.btn:hover, input[type="submit"].btn:hover, .btn:hover {
     font-size: 0.85rem;
 }
 
-/* Admin Tablo Stilleri */
 .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
 .admin-section { background-color: var(--bg-card); padding: 2rem; border-radius: 4px; border: 1px solid var(--primary); margin-bottom: 2rem; box-shadow: inset 0 0 10px rgba(255, 0, 60, 0.05); }
 .admin-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
@@ -227,7 +226,6 @@ a.btn:hover, button.btn:hover, input[type="submit"].btn:hover, .btn:hover {
 .admin-table th { color: var(--primary); font-family: var(--font-mono); font-weight: 500; }
 .admin-table td { font-family: var(--font-mono); font-size: 0.9rem; }
 
-/* YENİ: Başlıklar ve Giriş Ekranı */
 .section-title {
     color: var(--primary);
     border-bottom: 1px solid var(--border);
@@ -269,7 +267,6 @@ a.btn:hover, button.btn:hover, input[type="submit"].btn:hover, .btn:hover {
     box-shadow: 0 0 10px rgba(255, 0, 51, 0.3);
 }
 
-/* YENİ: Yorum Sistemi Tasarımı */
 .comments-section {
     margin-top: 2rem;
     padding-top: 1rem;
@@ -322,7 +319,6 @@ footer {
     margin-top: 2rem;
 }
 
-/* YENİ: Arka Plan Logo Animasyonu */
 .bg-animation-container {
     position: fixed;
     top: 0;
@@ -330,19 +326,18 @@ footer {
     width: 100%;
     height: 100%;
     z-index: 0;
-    pointer-events: none; /* Mouse tıklamalarını engellememesi için */
+    pointer-events: none; 
     overflow: hidden;
 }
 
 .floating-logo {
     position: absolute;
-    width: 200px; /* Logonun boyutu */
+    width: 200px; 
     height: 200px;
-    opacity: 0.15; /* Logonun görünürlüğü artırıldı */
-    filter: blur(2px); /* Logoyu biraz bulanıklaştır */
+    opacity: 0.15; 
+    filter: blur(2px); 
 }
 
-/* YENİ: Makale Görsel Stili */
 .post-cover-img {
     width: 100%;
     height: 250px;

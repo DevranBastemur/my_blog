@@ -32,10 +32,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Zaten tablo var ise hata almamak için var olan tabloya kolonu eklemeyi deniyoruz
 	_, _ = db.Exec(`ALTER TABLE blogs ADD COLUMN image_path TEXT DEFAULT '';`)
 
-	// Görsellerin yükleneceği dizini oluşturuyoruz
 	os.MkdirAll("./ui/static/uploads", 0755)
 
 	createCommentsSQL := `CREATE TABLE IF NOT EXISTS comments (
@@ -58,7 +56,6 @@ func main() {
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
-	// Rotalarımız
 	mux.HandleFunc("/", app.Home)
 	mux.HandleFunc("/post", app.ViewPost)
 	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
