@@ -1,19 +1,18 @@
 :root {
-    --bg-dark: #050505;
-    --bg-card: #0d0d0d;
-    --primary: #00ff00;
-    --primary-glow: rgba(0, 255, 0, 0.4);
-    --accent: #008800;
+    --bg-dark: #000000;
+    --bg-card: #050000;
+    --primary: #ff003c;
+    --primary-glow: rgba(255, 0, 60, 0.6);
+    --accent: #b3002a;
     --text-main: #e0e0e0;
     --text-muted: #666666;
-    --border: #1a331a;
-    --danger: #ff0033;
+    --border: #33000c;
+    --danger: #ff9900; /* Tehlike butonu turuncu yapıldı */
     --font-mono: 'Courier New', Courier, monospace;
 }
 
 body {
     background-color: var(--bg-dark);
-    background-image: radial-gradient(circle at center, #0a110a 0%, #050505 100%);
     color: var(--text-main);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
@@ -34,7 +33,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 4px 20px rgba(0, 255, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(255, 0, 60, 0.15);
 }
 
 .brand {
@@ -93,17 +92,28 @@ main {
 .blog-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border);
-    border-left: 3px solid var(--primary);
     border-radius: 4px;
     padding: 2rem;
     margin-bottom: 2rem;
+    box-shadow: inset 0 0 10px rgba(255, 0, 60, 0.05), 0 0 10px rgba(255, 0, 60, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .blog-card:hover {
     transform: translateY(-2px);
-    border-color: var(--primary);
-    box-shadow: 0 0 15px var(--primary-glow);
+    box-shadow: 0 0 20px var(--primary-glow), inset 0 0 15px rgba(255, 0, 60, 0.2);
+}
+
+.post-link {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.3s, text-shadow 0.3s;
+    display: inline-block;
+}
+
+.post-link:hover {
+    color: #fff;
+    text-shadow: 0 0 10px var(--primary-glow);
 }
 
 .blog-card h3 {
@@ -116,7 +126,6 @@ main {
 .blog-date {
     font-size: 0.85rem;
     color: var(--text-muted);
-    margin-bottom: 1rem;
     display: block;
     font-family: var(--font-mono);
 }
@@ -132,7 +141,7 @@ main {
     font-family: var(--font-mono);
 }
 
-input[type="text"], input[type="password"], textarea {
+input[type="text"], input[type="password"], textarea, select {
     width: 100%;
     padding: 1rem;
     background-color: #000;
@@ -144,13 +153,13 @@ input[type="text"], input[type="password"], textarea {
     transition: border-color 0.3s ease;
 }
 
-input:focus, textarea:focus {
+input:focus, textarea:focus, select:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 10px var(--primary-glow);
+    box-shadow: 0 0 15px var(--primary-glow);
 }
 
-.btn, button {
+a.btn, button.btn, input[type="submit"].btn, .btn {
     background: transparent;
     color: var(--primary);
     border: 1px solid var(--primary);
@@ -166,9 +175,10 @@ input:focus, textarea:focus {
     display: inline-block;
 }
 
-.btn:hover, button:hover {
+a.btn:hover, button.btn:hover, input[type="submit"].btn:hover, .btn:hover {
     background: var(--primary-glow);
     box-shadow: 0 0 15px var(--primary-glow);
+    color: #fff;
 }
 
 .btn-danger {
@@ -178,8 +188,8 @@ input:focus, textarea:focus {
 }
 
 .btn-danger:hover {
-    background: rgba(255, 0, 51, 0.2);
-    box-shadow: 0 0 15px rgba(255, 0, 51, 0.4);
+    background: rgba(255, 153, 0, 0.2);
+    box-shadow: 0 0 15px rgba(255, 153, 0, 0.4);
 }
 
 .btn-sm {
@@ -189,7 +199,7 @@ input:focus, textarea:focus {
 
 /* Admin Tablo Stilleri */
 .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-.admin-section { background-color: var(--bg-card); padding: 2rem; border-radius: 4px; border: 1px solid var(--border); border-top: 3px solid var(--primary); margin-bottom: 2rem; }
+.admin-section { background-color: var(--bg-card); padding: 2rem; border-radius: 4px; border: 1px solid var(--primary); margin-bottom: 2rem; box-shadow: inset 0 0 10px rgba(255, 0, 60, 0.05); }
 .admin-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
 .admin-table th, .admin-table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border); }
 .admin-table th { color: var(--primary); font-family: var(--font-mono); font-weight: 500; }
@@ -212,7 +222,7 @@ input:focus, textarea:focus {
     padding: 3rem;
     background: #050505;
     border: 1px solid var(--primary);
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.1), inset 0 0 20px rgba(0, 255, 0, 0.05);
+    box-shadow: 0 0 20px rgba(255, 0, 60, 0.1), inset 0 0 20px rgba(255, 0, 60, 0.05);
     border-radius: 4px;
     text-align: center;
     position: relative;
@@ -260,7 +270,7 @@ input:focus, textarea:focus {
 .comment-item {
     margin-bottom: 0.5rem;
     padding: 0.5rem;
-    background: rgba(0, 255, 0, 0.03);
+    background: rgba(255, 0, 60, 0.03);
     border-left: 2px solid var(--border);
     font-family: var(--font-mono);
     font-size: 0.9rem;

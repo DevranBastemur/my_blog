@@ -1,13 +1,13 @@
-# Derlenmiþ dosyalar
+# Derlenmiï¿½ dosyalar
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
 
-# Test çýktýlarý
+# Test ï¿½ï¿½ktï¿½larï¿½
 *.test
 *.out
 
-# Çevre deðiþkenleri
+# ï¿½evre deï¿½iï¿½kenleri
 .env

@@ -46,6 +46,18 @@ func (m *BlogModel) Insert(title, content string) (int, error) {
 	return int(id), nil
 }
 
+// ID'ye göre tek bir blog yazısını detaylarıyla çekme (Yeni detay sayfası için)
+func (m *BlogModel) Get(id int) (*BlogPost, error) {
+	stmt := `SELECT id, title, content, created_at FROM blogs WHERE id = ?`
+	b := &BlogPost{}
+	err := m.DB.QueryRow(stmt, id).Scan(&b.ID, &b.Title, &b.Content, &b.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+	b.Comments = m.GetCommentsForBlog(b.ID)
+	return b, nil
+}
+
 // Tüm blog yazılarını çekme (Ana sayfada kullanacağız)
 func (m *BlogModel) Latest() ([]*BlogPost, error) {
 	stmt := `SELECT id, title, content, created_at FROM blogs ORDER BY created_at DESC LIMIT 10`
@@ -65,11 +77,6 @@ func (m *BlogModel) Latest() ([]*BlogPost, error) {
 			return nil, err
 		}
 		blogs = append(blogs, b)
-	}
-
-	// Her bir blog yazısı için yorumları da çekelim
-	for _, b := range blogs {
-		b.Comments = m.GetCommentsForBlog(b.ID)
 	}
 
 	return blogs, nil

@@ -18,6 +18,7 @@ type App struct {
 // Şablonlara veri göndermek için kullanacağımız yapı
 type TemplateData struct {
 	Blogs    []*models.BlogPost
+	Blog     *models.BlogPost
 	Comments []*models.Comment
 	Error    string
 }
@@ -57,6 +58,23 @@ func (app *App) Home(w http.ResponseWriter, r *http.Request) {
 
 	data := &TemplateData{Blogs: blogs}
 	renderTemplate(w, "home.page.tmpl", data)
+}
+
+func (app *App) ViewPost(w http.ResponseWriter, r *http.Request) {
+	idStr := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
+
+	blog, err := app.Blogs.Get(id)
+	if err != nil {
+		http.Error(w, "Yazı bulunamadı", http.StatusNotFound)
+		return
+	}
+
+	renderTemplate(w, "post.page.tmpl", &TemplateData{Blog: blog})
 }
 
 func (app *App) LoginPage(w http.ResponseWriter, r *http.Request) {
@@ -200,7 +218,7 @@ func (app *App) AddComment(w http.ResponseWriter, r *http.Request) {
 		log.Println("Yorum ekleme hatası:", err)
 	}
 
-	http.Redirect(w, r, "/#blog-"+blogIDStr, http.StatusSeeOther)
+	http.Redirect(w, r, "/post?id="+blogIDStr, http.StatusSeeOther)
 }
 
 func (app *App) DeleteCommentAdmin(w http.ResponseWriter, r *http.Request) {

@@ -1,35 +1,13 @@
 {{template "base" .}}
 {{define "title"}}Ana Sayfa{{end}}
 {{define "main"}}
-    <h2 class="section-title">>_ SİSTEME EKLENEN SON VERİLER</h2>
+    <h2 class="section-title">>> SİSTEM AĞI: AKTİF BAĞLANTILAR</h2>
     
     {{if .Blogs}}
         {{range .Blogs}}
         <article class="blog-card" id="blog-{{.ID}}">
-            <h3>{{.Title}}</h3>
-            <span class="blog-date">>>> SYS.DATE: {{.CreatedAt.Format "02 Jan 2006 - 15:04"}}</span>
-            <p>{{.Content}}</p>
-            
-            <div class="comments-section">
-                <h4>[ KULLANICI YORUMLARI ]</h4>
-                {{if .Comments}}
-                    <ul class="comment-list">
-                        {{range .Comments}}
-                        <li class="comment-item">
-                            <span class="comment-date">[{{.CreatedAt.Format "02 Jan 15:04"}}]</span>
-                            <span class="comment-text">{{.Content}}</span>
-                        </li>
-                        {{end}}
-                    </ul>
-                {{else}}
-                    <p class="no-comments">Henüz dış bağlantı kaydı yok. İlk veri aktaran sen ol.</p>
-                {{end}}
-                <form action="/comment" method="POST" class="comment-form">
-                    <input type="hidden" name="blog_id" value="{{.ID}}">
-                    <input type="text" name="content" placeholder="Sisteme iz bırak..." required>
-                    <button type="submit" class="btn btn-sm">Gönder</button>
-                </form>
-            </div>
+            <h3><a href="/post?id={{.ID}}" class="post-link">[{{.Title}}]</a></h3>
+            <span class="blog-date">SYS.DATE: {{.CreatedAt.Format "02.01.2006"}}</span>
         </article>
         {{end}}
     {{else}}

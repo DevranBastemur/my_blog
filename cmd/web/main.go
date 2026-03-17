@@ -52,6 +52,7 @@ func main() {
 
 	// Rotalarımız
 	mux.HandleFunc("/", app.Home)
+	mux.HandleFunc("/post", app.ViewPost)
 	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			app.LoginPage(w, r)
