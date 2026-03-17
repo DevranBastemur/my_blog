@@ -11,6 +11,10 @@
     <!-- Arka planda gezen logo için container -->
     <div class="bg-animation-container">
         <img src="/static/img/logo.png" alt="" class="floating-logo" />
+        <img src="/static/img/logo.png" alt="" class="floating-logo" />
+        <img src="/static/img/logo.png" alt="" class="floating-logo" />
+        <img src="/static/img/logo.png" alt="" class="floating-logo" />
+        <img src="/static/img/logo.png" alt="" class="floating-logo" />
     </div>
 
     <header>
@@ -39,24 +43,32 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const container = document.querySelector('.bg-animation-container');
-            const logo = document.querySelector('.floating-logo');
+            const logos = document.querySelectorAll('.floating-logo');
 
-            if (!container || !logo) return;
+            if (!container || logos.length === 0) return;
 
-            let x = Math.random() * (container.clientWidth - logo.clientWidth);
-            let y = Math.random() * (container.clientHeight - logo.clientHeight);
-            let dx = (Math.random() - 0.5) * 1.5; // Hız ayarı
-            let dy = (Math.random() - 0.5) * 1.5;
+            // Her bir logonun kendi pozisyonunu ve hızını tutacak bir liste (array) oluşturuyoruz
+            const logoData = Array.from(logos).map(logo => {
+                return {
+                    el: logo,
+                    x: Math.random() * (container.clientWidth - 200), // CSS'te boyut 200px
+                    y: Math.random() * (container.clientHeight - 200),
+                    dx: (Math.random() - 0.5) * 2, // Hız ayarı
+                    dy: (Math.random() - 0.5) * 2
+                };
+            });
 
             function animate() {
-                x += dx;
-                y += dy;
+                logoData.forEach(data => {
+                    data.x += data.dx;
+                    data.y += data.dy;
 
-                // Ekran sınırlarına çarpıp sekme
-                if (x + logo.clientWidth > container.clientWidth || x < 0) { dx = -dx; }
-                if (y + logo.clientHeight > container.clientHeight || y < 0) { dy = -dy; }
+                    // Ekran sınırlarına çarpıp sekme (Logo boyutu 200px)
+                    if (data.x + 200 > container.clientWidth || data.x < 0) { data.dx = -data.dx; }
+                    if (data.y + 200 > container.clientHeight || data.y < 0) { data.dy = -data.dy; }
 
-                logo.style.transform = `translate(${x}px, ${y}px)`;
+                    data.el.style.transform = `translate(${data.x}px, ${data.y}px)`;
+                });
                 requestAnimationFrame(animate);
             }
 
