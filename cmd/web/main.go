@@ -63,6 +63,8 @@ func main() {
 	mux.HandleFunc("/comment", app.AddComment)
 	mux.HandleFunc("/admin", app.AdminDashboard)
 	mux.HandleFunc("/admin/post", app.CreatePost)
+	mux.HandleFunc("/admin/edit", app.EditPostPage)
+	mux.HandleFunc("/admin/update", app.UpdatePost)
 	mux.HandleFunc("/admin/delete", app.DeletePost)
 	mux.HandleFunc("/admin/delete-comment", app.DeleteCommentAdmin)
 	mux.HandleFunc("/logout", app.Logout)

@@ -39,6 +39,7 @@
                         <td style="font-weight: 500;">{{.Title}}</td>
                         <td style="color: var(--text-muted);">{{.CreatedAt.Format "02.01.2006 15:04"}}</td>
                         <td style="text-align:right;">
+                            <a href="/admin/edit?id={{.ID}}" class="btn btn-sm" style="margin-right: 5px;">Düzenle</a>
                             <a href="/admin/delete?id={{.ID}}" class="btn btn-sm btn-danger" onclick="return confirm('Bu yazıyı silmek istediğine emin misin? Bu işlem geri alınamaz.');">Sil</a>
                         </td>
                     </tr>

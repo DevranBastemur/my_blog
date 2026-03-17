@@ -176,6 +176,55 @@ func (app *App) CreatePost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
+func (app *App) EditPostPage(w http.ResponseWriter, r *http.Request) {
+	if !isAuthenticated(r) {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	idStr := r.URL.Query().Get("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil || id < 1 {
+		http.Error(w, "Geçersiz ID", http.StatusBadRequest)
+		return
+	}
+
+	blog, err := app.Blogs.Get(id)
+	if err != nil {
+		http.Error(w, "Yazı bulunamadı", http.StatusNotFound)
+		return
+	}
+
+	renderTemplate(w, "edit.page.tmpl", &TemplateData{Blog: blog})
+}
+
+func (app *App) UpdatePost(w http.ResponseWriter, r *http.Request) {
+	if !isAuthenticated(r) {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	r.ParseForm()
+	idStr := r.FormValue("id")
+	title := r.FormValue("title")
+	content := r.FormValue("content")
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil || id < 1 {
+		http.Error(w, "Geçersiz ID", http.StatusBadRequest)
+		return
+	}
+
+	err = app.Blogs.Update(id, title, content)
+	if err != nil {
+		log.Println("Güncelleme hatası:", err)
+		http.Error(w, "Güncellenemedi", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/admin", http.StatusSeeOther)
+}
+
 func (app *App) DeletePost(w http.ResponseWriter, r *http.Request) {
 	if !isAuthenticated(r) {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
@@ -210,6 +259,11 @@ func (app *App) AddComment(w http.ResponseWriter, r *http.Request) {
 	blogID, err := strconv.Atoi(blogIDStr)
 	if err != nil || content == "" {
 		http.Redirect(w, r, "/", http.StatusBadRequest)
+		return
+	}
+
+	if len([]rune(content)) > 250 {
+		http.Error(w, "Yorum 250 karakterden uzun olamaz", http.StatusBadRequest)
 		return
 	}
 

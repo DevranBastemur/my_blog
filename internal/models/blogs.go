@@ -103,6 +103,13 @@ func (m *BlogModel) All() ([]*BlogPost, error) {
 	return blogs, nil
 }
 
+// ID'ye göre blog yazısını güncelleme
+func (m *BlogModel) Update(id int, title, content string) error {
+	stmt := `UPDATE blogs SET title = ?, content = ? WHERE id = ?`
+	_, err := m.DB.Exec(stmt, title, content, id)
+	return err
+}
+
 // ID'sine göre blog yazısını silme
 func (m *BlogModel) Delete(id int) error {
 	// Önce bloğa ait yorumları silelim

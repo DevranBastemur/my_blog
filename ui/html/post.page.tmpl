@@ -25,7 +25,7 @@
         {{end}}
         <form action="/comment" method="POST" class="comment-form">
             <input type="hidden" name="blog_id" value="{{.Blog.ID}}">
-            <input type="text" name="content" placeholder="Ağa iz bırak..." required>
+            <input type="text" name="content" placeholder="Ağa iz bırak (Maks 250 karakter)..." maxlength="250" required>
             <button type="submit" class="btn btn-sm">GÖNDER</button>
         </form>
     </div>
