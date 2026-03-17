@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"kisisel-blog/internal/handlers"
@@ -23,12 +24,19 @@ func main() {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		title TEXT NOT NULL,
 		content TEXT NOT NULL,
+		image_path TEXT DEFAULT '',
 		created_at DATETIME NOT NULL
 	);`
 	_, err = db.Exec(createTableSQL)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// Zaten tablo var ise hata almamak için var olan tabloya kolonu eklemeyi deniyoruz
+	_, _ = db.Exec(`ALTER TABLE blogs ADD COLUMN image_path TEXT DEFAULT '';`)
+
+	// Görsellerin yükleneceği dizini oluşturuyoruz
+	os.MkdirAll("./ui/static/uploads", 0755)
 
 	createCommentsSQL := `CREATE TABLE IF NOT EXISTS comments (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,

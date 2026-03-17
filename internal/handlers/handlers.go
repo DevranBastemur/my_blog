@@ -1,10 +1,13 @@
 package handlers
 
 import (
+	"fmt"
 	"html/template"
+	"io"
 	"kisisel-blog/internal/models"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -162,11 +165,17 @@ func (app *App) CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	r.ParseForm()
+	imagePath, err := uploadImage(r, "image")
+	if err != nil {
+		log.Println("Görsel yükleme hatası:", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	title := r.FormValue("title")
 	content := r.FormValue("content")
 
-	_, err := app.Blogs.Insert(title, content)
+	_, err = app.Blogs.Insert(title, content, imagePath)
 	if err != nil {
 		log.Println("Ekleme hatası:", err)
 		http.Error(w, "Kaydedilemedi", http.StatusInternalServerError)
@@ -204,10 +213,22 @@ func (app *App) UpdatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	r.ParseForm()
+	imagePath, err := uploadImage(r, "image")
+	if err != nil {
+		log.Println("Görsel yükleme hatası:", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	idStr := r.FormValue("id")
 	title := r.FormValue("title")
 	content := r.FormValue("content")
+	existingImage := r.FormValue("existing_image")
+
+	// Eğer formdan yeni resim seçilmediyse eskisini koru
+	if imagePath == "" {
+		imagePath = existingImage
+	}
 
 	id, err := strconv.Atoi(idStr)
 	if err != nil || id < 1 {
@@ -215,7 +236,7 @@ func (app *App) UpdatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = app.Blogs.Update(id, title, content)
+	err = app.Blogs.Update(id, title, content, imagePath)
 	if err != nil {
 		log.Println("Güncelleme hatası:", err)
 		http.Error(w, "Güncellenemedi", http.StatusInternalServerError)
@@ -322,4 +343,64 @@ func renderTemplate(w http.ResponseWriter, tmpl string, data *TemplateData) {
 	if err != nil {
 		log.Println("Şablon execute hatası:", err)
 	}
+}
+
+// ANTI-SHELL: Güvenli Dosya Yükleme Fonksiyonu
+func uploadImage(r *http.Request, formKey string) (string, error) {
+	err := r.ParseMultipartForm(5 << 20) // Maksimum 5MB ram işgali
+	if err != nil {
+		return "", err
+	}
+
+	file, header, err := r.FormFile(formKey)
+	if err != nil {
+		if err == http.ErrMissingFile {
+			return "", nil // Kullanıcı dosya yüklemedi, hata değil
+		}
+		return "", err
+	}
+	defer file.Close()
+
+	// 1. GÜVENLİK: Limit 5MB
+	if header.Size > 5*1024*1024 {
+		return "", fmt.Errorf("dosya çok büyük (maksimum 5MB olmalı)")
+	}
+
+	// 2. GÜVENLİK: Dosyanın gerçek MAGIC BYTES (MIME Type) değerini oku
+	buff := make([]byte, 512)
+	_, _ = file.Read(buff)
+	file.Seek(0, io.SeekStart) // Okuma imlecini geri başa sar
+
+	mimeType := http.DetectContentType(buff)
+	var ext string
+	switch mimeType {
+	case "image/jpeg":
+		ext = ".jpg"
+	case "image/png":
+		ext = ".png"
+	case "image/gif":
+		ext = ".gif"
+	case "image/webp":
+		ext = ".webp"
+	default:
+		return "", fmt.Errorf("GÜVENLİK İHLALİ: Sadece resim dosyası yükleyebilirsiniz")
+	}
+
+	// 3. GÜVENLİK: Orjinal ismi tamamen çöpe atıp rastgele isim ver
+	fileName := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
+	savePath := fmt.Sprintf("./ui/static/uploads/%s", fileName)
+	dbPath := fmt.Sprintf("/static/uploads/%s", fileName)
+
+	out, err := os.Create(savePath)
+	if err != nil {
+		return "", err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, file)
+	if err != nil {
+		return "", err
+	}
+
+	return dbPath, nil
 }

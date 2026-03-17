@@ -19,6 +19,7 @@ type BlogPost struct {
 	ID        int
 	Title     string
 	Content   string
+	ImagePath string
 	CreatedAt time.Time
 	Comments  []*Comment
 }
@@ -29,11 +30,11 @@ type BlogModel struct {
 }
 
 // Yeni bir blog yazısı ekleme (İleride admin panelinde kullanacağız)
-func (m *BlogModel) Insert(title, content string) (int, error) {
+func (m *BlogModel) Insert(title, content, imagePath string) (int, error) {
 	// Parametreli sorgu (?) kullanarak SQL Injection saldırılarını kesin olarak engelliyoruz
-	stmt := `INSERT INTO blogs (title, content, created_at) VALUES (?, ?, ?)`
+	stmt := `INSERT INTO blogs (title, content, image_path, created_at) VALUES (?, ?, ?, ?)`
 
-	result, err := m.DB.Exec(stmt, title, content, time.Now())
+	result, err := m.DB.Exec(stmt, title, content, imagePath, time.Now())
 	if err != nil {
 		return 0, err
 	}
@@ -48,9 +49,9 @@ func (m *BlogModel) Insert(title, content string) (int, error) {
 
 // ID'ye göre tek bir blog yazısını detaylarıyla çekme (Yeni detay sayfası için)
 func (m *BlogModel) Get(id int) (*BlogPost, error) {
-	stmt := `SELECT id, title, content, created_at FROM blogs WHERE id = ?`
+	stmt := `SELECT id, title, content, image_path, created_at FROM blogs WHERE id = ?`
 	b := &BlogPost{}
-	err := m.DB.QueryRow(stmt, id).Scan(&b.ID, &b.Title, &b.Content, &b.CreatedAt)
+	err := m.DB.QueryRow(stmt, id).Scan(&b.ID, &b.Title, &b.Content, &b.ImagePath, &b.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +61,7 @@ func (m *BlogModel) Get(id int) (*BlogPost, error) {
 
 // Tüm blog yazılarını çekme (Ana sayfada kullanacağız)
 func (m *BlogModel) Latest() ([]*BlogPost, error) {
-	stmt := `SELECT id, title, content, created_at FROM blogs ORDER BY created_at DESC LIMIT 10`
+	stmt := `SELECT id, title, content, image_path, created_at FROM blogs ORDER BY created_at DESC LIMIT 10`
 
 	rows, err := m.DB.Query(stmt)
 	if err != nil {
@@ -72,7 +73,7 @@ func (m *BlogModel) Latest() ([]*BlogPost, error) {
 
 	for rows.Next() {
 		b := &BlogPost{}
-		err = rows.Scan(&b.ID, &b.Title, &b.Content, &b.CreatedAt)
+		err = rows.Scan(&b.ID, &b.Title, &b.Content, &b.ImagePath, &b.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -84,7 +85,7 @@ func (m *BlogModel) Latest() ([]*BlogPost, error) {
 
 // Tüm blog yazılarını çekme (Admin panelinde tablo olarak listelemek için)
 func (m *BlogModel) All() ([]*BlogPost, error) {
-	stmt := `SELECT id, title, content, created_at FROM blogs ORDER BY created_at DESC`
+	stmt := `SELECT id, title, content, image_path, created_at FROM blogs ORDER BY created_at DESC`
 	rows, err := m.DB.Query(stmt)
 	if err != nil {
 		return nil, err
@@ -94,7 +95,7 @@ func (m *BlogModel) All() ([]*BlogPost, error) {
 	var blogs []*BlogPost
 	for rows.Next() {
 		b := &BlogPost{}
-		err = rows.Scan(&b.ID, &b.Title, &b.Content, &b.CreatedAt)
+		err = rows.Scan(&b.ID, &b.Title, &b.Content, &b.ImagePath, &b.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -104,9 +105,9 @@ func (m *BlogModel) All() ([]*BlogPost, error) {
 }
 
 // ID'ye göre blog yazısını güncelleme
-func (m *BlogModel) Update(id int, title, content string) error {
-	stmt := `UPDATE blogs SET title = ?, content = ? WHERE id = ?`
-	_, err := m.DB.Exec(stmt, title, content, id)
+func (m *BlogModel) Update(id int, title, content, imagePath string) error {
+	stmt := `UPDATE blogs SET title = ?, content = ?, image_path = ? WHERE id = ?`
+	_, err := m.DB.Exec(stmt, title, content, imagePath, id)
 	return err
 }
 

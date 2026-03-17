@@ -8,10 +8,14 @@
 
 <div class="admin-section">
     <h3 style="margin-top:0; color:var(--primary);">Yeni Yazı Ekle</h3>
-    <form action="/admin/post" method="POST">
+    <form action="/admin/post" method="POST" enctype="multipart/form-data">
         <div class="form-group">
             <label for="title">Blog Başlığı</label>
             <input type="text" id="title" name="title" placeholder="Harika bir başlık düşün..." required>
+        </div>
+        <div class="form-group">
+            <label for="image">Görsel (İsteğe Bağlı, Max 5MB)</label>
+            <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/webp, image/gif">
         </div>
         <div class="form-group">
             <label for="content">Yazı İçeriği</label>

@@ -6,6 +6,9 @@
     {{if .Blogs}}
         {{range .Blogs}}
         <article class="blog-card" id="blog-{{.ID}}">
+            {{if .ImagePath}}
+                <a href="/post?id={{.ID}}"><img src="{{.ImagePath}}" alt="{{.Title}}" class="post-cover-img"></a>
+            {{end}}
             <h3><a href="/post?id={{.ID}}" class="post-link">[{{.Title}}]</a></h3>
             <span class="blog-date">SYS.DATE: {{.CreatedAt.Format "02.01.2006"}}</span>
         </article>

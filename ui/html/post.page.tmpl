@@ -5,6 +5,10 @@
     <h2 class="section-title" style="border:none; margin-bottom: 0;">{{.Blog.Title}}</h2>
     <span class="blog-date" style="border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem;">>>> SYS.DATE: {{.Blog.CreatedAt.Format "02 Jan 2006 - 15:04"}}</span>
     
+    {{if .Blog.ImagePath}}
+        <img src="{{.Blog.ImagePath}}" alt="{{.Blog.Title}}" class="detail-cover-img" style="width: 100%; max-height: 450px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); margin-bottom: 1.5rem; box-shadow: 0 0 15px rgba(255, 0, 60, 0.1);">
+    {{end}}
+
     <div class="post-content">
         {{.Blog.Content}}
     </div>
