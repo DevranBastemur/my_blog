@@ -54,5 +54,5 @@ Projeyi yerel ortamınızda çalıştırmak için aşağıdaki adımları izleye
 
 1. **Projeyi Klonlayın:**
    ```bash
-   git clone [https://github.com/devranbastemur/devryanblog.git](https://github.com/kullaniciadi/devryanblog.git)
+   git clone [https://github.com/devranbastemur/devryanblog.git](https://github.com/devranbastemur/devryanblog.git)
    cd devryanblog
