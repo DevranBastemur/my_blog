@@ -7,7 +7,7 @@ DevRyanBlog, Go (Golang) ve SQLite kullanılarak defansif programlama (Secure Co
 <img width="1864" height="924" alt="Ekran görüntüsü 2026-03-17 224641" src="https://github.com/user-attachments/assets/ba2296b3-1518-4a5c-9a6c-ed828e10668c" />
 
 
-## 🚀 Temel Özellikler
+##  Temel Özellikler
 
 - **Güvenli Mimarisi:** XSS ve SQL Injection gibi temel web zafiyetlerine karşı Go'nun yerleşik güvenlik önlemleriyle donatılmıştır.
 - **Siber Temalı Arayüz:** Zifiri siyah arka plan, neon kırmızı vurgular ve terminal esintili tipografi ile tam bir Blue Team konsepti.
@@ -48,7 +48,7 @@ Sistemin kalbi olan admin girişi, yetkisiz erişimlere karşı katı kurallarla
 
 ---
 
-## 🛠️ Kurulum ve Çalıştırma
+##  Kurulum ve Çalıştırma
 
 Projeyi yerel ortamınızda çalıştırmak için aşağıdaki adımları izleyebilirsiniz.
 
