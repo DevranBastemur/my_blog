@@ -17,7 +17,7 @@ DevRyanBlog, Go (Golang) ve SQLite kullanılarak defansif programlama (Secure Co
 
 ---
 
-## 📸 Ekran Görüntüleri ve Modüller
+##  Ekran Görüntüleri ve Modüller
 
 ### 1. Dinamik İçerik ve Yorum Sistemi
 Kullanıcılar blog yazılarını okuyabilir ve iz bırakabilir (yorum yapabilir). Yorumlar 250 karakter ile sınırlandırılmıştır ve anlık olarak sisteme kaydedilir.
