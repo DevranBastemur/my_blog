@@ -18,7 +18,6 @@ type App struct {
 	Blogs *models.BlogModel
 }
 
-// Şablonlara veri göndermek için kullanacağımız yapı
 type TemplateData struct {
 	Blogs    []*models.BlogPost
 	Blog     *models.BlogPost
@@ -94,7 +93,6 @@ func (app *App) LoginPost(w http.ResponseWriter, r *http.Request) {
 	ip := getIP(r)
 
 	authMutex.Lock()
-	// Kilit kontrolü
 	if expiry, exists := lockoutExpiry[ip]; exists {
 		if time.Now().Before(expiry) {
 			authMutex.Unlock()
@@ -102,7 +100,6 @@ func (app *App) LoginPost(w http.ResponseWriter, r *http.Request) {
 			renderTemplate(w, "login.page.tmpl", &TemplateData{Error: "Çok fazla hatalı deneme! Sistem " + strconv.Itoa(remaining) + " dakika kilitlendi."})
 			return
 		} else {
-			// Kilit süresi dolmuş, sıfırla
 			delete(lockoutExpiry, ip)
 			delete(failedAttempts, ip)
 		}
@@ -225,7 +222,6 @@ func (app *App) UpdatePost(w http.ResponseWriter, r *http.Request) {
 	content := r.FormValue("content")
 	existingImage := r.FormValue("existing_image")
 
-	// Eğer formdan yeni resim seçilmediyse eskisini koru
 	if imagePath == "" {
 		imagePath = existingImage
 	}
@@ -319,7 +315,6 @@ func (app *App) Logout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-// Yardımcı Fonksiyonlar
 func isAuthenticated(r *http.Request) bool {
 	cookie, err := r.Cookie("auth")
 	if err != nil {
@@ -345,7 +340,6 @@ func renderTemplate(w http.ResponseWriter, tmpl string, data *TemplateData) {
 	}
 }
 
-// ANTI-SHELL: Güvenli Dosya Yükleme Fonksiyonu
 func uploadImage(r *http.Request, formKey string) (string, error) {
 	err := r.ParseMultipartForm(5 << 20) // Maksimum 5MB ram işgali
 	if err != nil {
@@ -361,15 +355,13 @@ func uploadImage(r *http.Request, formKey string) (string, error) {
 	}
 	defer file.Close()
 
-	// 1. GÜVENLİK: Limit 5MB
 	if header.Size > 5*1024*1024 {
 		return "", fmt.Errorf("dosya çok büyük (maksimum 5MB olmalı)")
 	}
 
-	// 2. GÜVENLİK: Dosyanın gerçek MAGIC BYTES (MIME Type) değerini oku
 	buff := make([]byte, 512)
 	_, _ = file.Read(buff)
-	file.Seek(0, io.SeekStart) // Okuma imlecini geri başa sar
+	file.Seek(0, io.SeekStart) 
 
 	mimeType := http.DetectContentType(buff)
 	var ext string
@@ -386,7 +378,6 @@ func uploadImage(r *http.Request, formKey string) (string, error) {
 		return "", fmt.Errorf("GÜVENLİK İHLALİ: Sadece resim dosyası yükleyebilirsiniz")
 	}
 
-	// 3. GÜVENLİK: Orjinal ismi tamamen çöpe atıp rastgele isim ver
 	fileName := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
 	savePath := fmt.Sprintf("./ui/static/uploads/%s", fileName)
 	dbPath := fmt.Sprintf("/static/uploads/%s", fileName)
