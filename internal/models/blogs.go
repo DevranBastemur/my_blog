@@ -8,7 +8,11 @@ import (
 type Comment struct {
 	ID        int
 	BlogID    int
+<<<<<<< HEAD
 	BlogTitle string
+=======
+	BlogTitle string 
+>>>>>>> a9e182bbec6e1ed09973c84ad2f35b9f54df1c28
 	Content   string
 	CreatedAt time.Time
 }
@@ -103,7 +107,10 @@ func (m *BlogModel) Update(id int, title, content, imagePath string) error {
 }
 
 func (m *BlogModel) Delete(id int) error {
+<<<<<<< HEAD
 
+=======
+>>>>>>> a9e182bbec6e1ed09973c84ad2f35b9f54df1c28
 	_, _ = m.DB.Exec(`DELETE FROM comments WHERE blog_id = ?`, id)
 
 	stmt := `DELETE FROM blogs WHERE id = ?`
@@ -111,6 +118,10 @@ func (m *BlogModel) Delete(id int) error {
 	return err
 }
 
+<<<<<<< HEAD
+=======
+// youm 
+>>>>>>> a9e182bbec6e1ed09973c84ad2f35b9f54df1c28
 func (m *BlogModel) InsertComment(blogID int, content string) error {
 	stmt := `INSERT INTO comments (blog_id, content, created_at) VALUES (?, ?, ?)`
 	_, err := m.DB.Exec(stmt, blogID, content, time.Now())
