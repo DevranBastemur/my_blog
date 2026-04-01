@@ -10,6 +10,7 @@
         box-shadow: 0 4px 15px rgba(255, 0, 60, 0.1);
         font-family: 'Courier New', Courier, monospace;
         overflow: hidden;
+        cursor: text;
     }
     .terminal-header {
         background-color: #111;
@@ -23,16 +24,41 @@
     .terminal-header .min { background-color: #ffbd2e; }
     .terminal-header .max { background-color: #27c93f; }
     .terminal-header .title { color: #888; font-size: 0.85rem; margin-left: 10px; }
-    .terminal-body { padding: 20px; color: #a9b7c6; font-size: 1rem; line-height: 1.6; }
+    
+    .terminal-body { 
+        padding: 20px; 
+        color: #a9b7c6; 
+        font-size: 1rem; 
+        line-height: 1.6; 
+        height: 400px;
+        overflow-y: auto;
+    }
     .terminal-body p { margin: 8px 0; }
     .terminal-body .prompt { color: #ff003c; font-weight: bold; margin-right: 8px; }
     .terminal-body .cmd { color: #00ff00; }
-    .blink { 
-        display: inline-block; width: 8px; height: 15px; background-color: #ff003c;
-        animation: blink-animation 1s step-end infinite; vertical-align: middle; margin-left: 4px;
+    
+    .term-output-line { margin-bottom: 6px; }
+    .file-list { color: #3498db; display: flex; gap: 20px; font-weight: bold; }
+    .file-list span { text-decoration: underline; text-decoration-color: #333; }
+
+    .term-input-line { display: flex; align-items: center; margin-top: 10px; }
+    #term-input {
+        background: transparent;
+        border: none;
+        color: #00ff00;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        flex-grow: 1;
+        outline: none;
+        padding: 0;
+        margin: 0;
+        box-shadow: none;
     }
-    @keyframes blink-animation { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 </style>
+
+<!-- Go backend'den gelen verileri güvenle JS'e aktarmak için gizli div'ler -->
+<div id="data-about" style="display:none;">{{.AboutText}}</div>
+<div id="data-contact" style="display:none;">{{.ContactText}}</div>
 
 <div class="terminal-about">
     <div class="terminal-header">
@@ -41,11 +67,84 @@
         <span class="btn max"></span>
         <span class="title">root@devryan:~# whoami</span>
     </div>
-    <div class="terminal-body">
-        <p><span class="prompt">devryan@server:~$</span> <span class="cmd">cat about.txt</span></p>
-        <p>Sisteme hoş geldiniz. Ben Devran; siber güvenlik meraklısı, geliştirici ve araştırmacıyım.</p>
-        <p>Burada defansif programlama, siber güvenlik notlarım ve kişisel projelerim hakkında yazılar paylaşıyorum.</p>
-        <p><span class="prompt">devryan@server:~$</span> Sisteme yetkisiz giriş yapmaya çalışmayın, tüm loglar kaydedilmektedir.<span class="blink"></span></p>
+    <div class="terminal-body" id="term-body">
+        <div id="term-output"></div>
+        
+        <div class="term-input-line">
+            <span class="prompt">devryan@server:~$</span>
+            <input type="text" id="term-input" autocomplete="off" spellcheck="false" autofocus>
+        </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('term-input');
+        const output = document.getElementById('term-output');
+        const terminalBody = document.getElementById('term-body');
+
+        // Backend'den gizli div'ler aracılığıyla metinleri alıyoruz
+        const aboutText = document.getElementById('data-about').innerHTML;
+        const contactText = document.getElementById('data-contact').innerHTML;
+
+        // Konsola satır ekleme fonksiyonu
+        function printLine(html) {
+            const div = document.createElement('div');
+            div.className = 'term-output-line';
+            div.innerHTML = html;
+            output.appendChild(div);
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+        }
+
+        // Başlangıç Karşılama Mesajı
+        printLine('Sisteme hoş geldiniz. Kimliği doğrulanmamış kullanıcı tespit edildi.<br>Etkileşime geçmek için komut giriniz. Komut listesi için <span class="cmd">help</span> yazın.<br><br>');
+
+        // Enter tuşu dinleyicisi
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const cmd = this.value.trim();
+                this.value = '';
+
+                // Kullanıcının yazdığını ekrana bas
+                printLine(`<span class="prompt">devryan@server:~$</span> <span class="cmd">${cmd}</span>`);
+
+                if (cmd === '') return;
+
+                const args = cmd.split(' ').filter(Boolean);
+                const mainCmd = args[0].toLowerCase();
+
+                if (mainCmd === 'clear') {
+                    output.innerHTML = '';
+                } else if (mainCmd === 'help') {
+                    printLine('Kullanılabilir komutlar: <span class="cmd">ls</span>, <span class="cmd">cat</span>, <span class="cmd">clear</span>, <span class="cmd">whoami</span>');
+                } else if (mainCmd === 'whoami') {
+                    printLine('guest_user (yetkisiz erişim)');
+                } else if (mainCmd === 'ls') {
+                    printLine('<div class="file-list"><span>hakkimda.txt</span> <span>iletisim.txt</span> <span>yazilarim.txt</span></div>');
+                } else if (mainCmd === 'cat') {
+                    if (args.length < 2) {
+                        printLine('cat: dosya adı belirtilmedi. Örn: cat hakkimda.txt');
+                    } else {
+                        let file = args[1].toLowerCase();
+                        if (file === 'hakkimda.txt' || file === 'hakkimda') {
+                            printLine(aboutText);
+                        } else if (file === 'iletisim.txt' || file === 'iletisim') {
+                            printLine(contactText);
+                        } else if (file === 'yazilarim.txt' || file === 'yazilarim') {
+                            printLine('Yazılar listesine yönlendiriliyorsunuz...');
+                            setTimeout(() => window.location.href = '/articles', 1000);
+                        } else {
+                            printLine(`cat: ${file}: Böyle bir dosya veya dizin yok`);
+                        }
+                    }
+                } else {
+                    printLine(`${mainCmd}: komut bulunamadı. Kullanılabilir komutları görmek için 'help' yazın.`);
+                }
+            }
+        });
+
+        // Terminalin neresine tıklanırsa tıklansın input'a odaklansın
+        document.querySelector('.terminal-about').addEventListener('click', () => input.focus());
+    });
+</script>
 {{end}}

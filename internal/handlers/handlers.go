@@ -12,10 +12,12 @@ type App struct {
 }
 
 type TemplateData struct {
-	Blogs    []*models.BlogPost
-	Blog     *models.BlogPost
-	Comments []*models.Comment
-	Error    string
+	Blogs       []*models.BlogPost
+	Blog        *models.BlogPost
+	Comments    []*models.Comment
+	Error       string
+	AboutText   string
+	ContactText string
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl string, data *TemplateData) {

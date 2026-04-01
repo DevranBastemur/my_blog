@@ -57,6 +57,7 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	mux.HandleFunc("/", app.Home)
+	mux.HandleFunc("/articles", app.Articles)
 	mux.HandleFunc("/post", app.ViewPost)
 	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
