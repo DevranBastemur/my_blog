@@ -12,6 +12,10 @@ func (app *App) Home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	renderTemplate(w, "home.page.tmpl", &TemplateData{})
+}
+
+func (app *App) Articles(w http.ResponseWriter, r *http.Request) {
 	blogs, err := app.Blogs.Latest()
 	if err != nil {
 		log.Println("DB Hatası:", err)
@@ -19,8 +23,7 @@ func (app *App) Home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := &TemplateData{Blogs: blogs}
-	renderTemplate(w, "home.page.tmpl", data)
+	renderTemplate(w, "articles.page.tmpl", &TemplateData{Blogs: blogs})
 }
 
 func (app *App) ViewPost(w http.ResponseWriter, r *http.Request) {

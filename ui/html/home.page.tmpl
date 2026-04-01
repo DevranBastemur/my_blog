@@ -1,19 +1,51 @@
 {{template "base" .}}
 {{define "title"}}Ana Sayfa{{end}}
 {{define "main"}}
-    <h2 class="section-title">>> YAZILARIM</h2>
-    
-    {{if .Blogs}}
-        {{range .Blogs}}
-        <article class="blog-card" id="blog-{{.ID}}">
-            {{if .ImagePath}}
-                <a href="/post?id={{.ID}}"><img src="{{.ImagePath}}" alt="{{.Title}}" class="post-cover-img"></a>
-            {{end}}
-            <h3><a href="/post?id={{.ID}}" class="post-link">[{{.Title}}]</a></h3>
-            <span class="blog-date">SYS.DATE: {{.CreatedAt.Format "02.01.2006"}}</span>
-        </article>
-        {{end}}
-    {{else}}
-        <p style="color: var(--text-muted);">Sistemde henüz bir kayıt bulunamadı...</p>
-    {{end}}
+<style>
+    .terminal-about {
+        background-color: #050505;
+        border: 1px solid #333;
+        border-radius: 6px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(255, 0, 60, 0.1);
+        font-family: 'Courier New', Courier, monospace;
+        overflow: hidden;
+    }
+    .terminal-header {
+        background-color: #111;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #333;
+    }
+    .terminal-header .btn { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+    .terminal-header .close { background-color: #ff5f56; }
+    .terminal-header .min { background-color: #ffbd2e; }
+    .terminal-header .max { background-color: #27c93f; }
+    .terminal-header .title { color: #888; font-size: 0.85rem; margin-left: 10px; }
+    .terminal-body { padding: 20px; color: #a9b7c6; font-size: 1rem; line-height: 1.6; }
+    .terminal-body p { margin: 8px 0; }
+    .terminal-body .prompt { color: #ff003c; font-weight: bold; margin-right: 8px; }
+    .terminal-body .cmd { color: #00ff00; }
+    .blink { 
+        display: inline-block; width: 8px; height: 15px; background-color: #ff003c;
+        animation: blink-animation 1s step-end infinite; vertical-align: middle; margin-left: 4px;
+    }
+    @keyframes blink-animation { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+</style>
+
+<div class="terminal-about">
+    <div class="terminal-header">
+        <span class="btn close"></span>
+        <span class="btn min"></span>
+        <span class="btn max"></span>
+        <span class="title">root@devryan:~# whoami</span>
+    </div>
+    <div class="terminal-body">
+        <p><span class="prompt">devryan@server:~$</span> <span class="cmd">cat about.txt</span></p>
+        <p>Sisteme hoş geldiniz. Ben Devran; siber güvenlik meraklısı, geliştirici ve araştırmacıyım.</p>
+        <p>Burada defansif programlama, siber güvenlik notlarım ve kişisel projelerim hakkında yazılar paylaşıyorum.</p>
+        <p><span class="prompt">devryan@server:~$</span> Sisteme yetkisiz giriş yapmaya çalışmayın, tüm loglar kaydedilmektedir.<span class="blink"></span></p>
+    </div>
+</div>
 {{end}}
