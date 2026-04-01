@@ -13,8 +13,8 @@ func (app *App) Home(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := &TemplateData{
-		AboutText:   "Ben Devran; siber güvenlik meraklısı, geliştirici ve araştırmacıyım.<br>Burada defansif programlama, siber güvenlik notlarım ve kişisel projelerim hakkında paylaşımlar yapıyorum.",
-		ContactText: "E-Posta : devran@ornek.com<br>GitHub  : github.com/devranbastemur<br>X (Tw)  : @devran_sec<br><br>Sistemde herhangi bir zafiyet bulursanız lütfen e-posta üzerinden bildiriniz.",
+		AboutText:   app.Blogs.GetSetting("about_text"),
+		ContactText: app.Blogs.GetSetting("contact_text"),
 	}
 
 	renderTemplate(w, "home.page.tmpl", data)

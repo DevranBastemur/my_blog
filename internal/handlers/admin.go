@@ -153,6 +153,29 @@ func (app *App) DeleteCommentAdmin(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/admin", http.StatusSeeOther)
 }
 
+func (app *App) SettingsPage(w http.ResponseWriter, r *http.Request) {
+	if !isAuthenticated(r) {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+
+	data := &TemplateData{
+		AboutText:   app.Blogs.GetSetting("about_text"),
+		ContactText: app.Blogs.GetSetting("contact_text"),
+	}
+	renderTemplate(w, "settings.page.tmpl", data)
+}
+
+func (app *App) UpdateSettingsPost(w http.ResponseWriter, r *http.Request) {
+	if !isAuthenticated(r) {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+	app.Blogs.UpdateSetting("about_text", r.FormValue("about_text"))
+	app.Blogs.UpdateSetting("contact_text", r.FormValue("contact_text"))
+	http.Redirect(w, r, "/admin/settings", http.StatusSeeOther)
+}
+
 func uploadImage(r *http.Request, formKey string) (string, error) {
 	err := r.ParseMultipartForm(5 << 20)
 	if err != nil {

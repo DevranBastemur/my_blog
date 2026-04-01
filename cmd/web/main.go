@@ -48,6 +48,16 @@ func main() {
 		log.Fatal(err)
 	}
 
+	createSettingsSQL := `CREATE TABLE IF NOT EXISTS settings (
+		key TEXT PRIMARY KEY,
+		value TEXT NOT NULL
+	);`
+	_, _ = db.Exec(createSettingsSQL)
+
+	// Varsayılan ayarları veritabanına ekleyelim
+	_, _ = db.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('about_text', 'Ben Devran; siber güvenlik meraklısı, geliştirici ve araştırmacıyım.<br>Burada defansif programlama, siber güvenlik notlarım ve kişisel projelerim hakkında paylaşımlar yapıyorum.')`)
+	_, _ = db.Exec(`INSERT OR IGNORE INTO settings (key, value) VALUES ('contact_text', 'E-Posta : devran@ornek.com<br>GitHub  : github.com/devranbastemur<br>X (Tw)  : @devran_sec<br><br>Sistemde herhangi bir zafiyet bulursanız lütfen e-posta üzerinden bildiriniz.')`)
+
 	app := &handlers.App{
 		Blogs: &models.BlogModel{DB: db},
 	}
@@ -73,6 +83,13 @@ func main() {
 	mux.HandleFunc("/admin/update", app.UpdatePost)
 	mux.HandleFunc("/admin/delete", app.DeletePost)
 	mux.HandleFunc("/admin/delete-comment", app.DeleteCommentAdmin)
+	mux.HandleFunc("/admin/settings", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			app.SettingsPage(w, r)
+		} else if r.Method == http.MethodPost {
+			app.UpdateSettingsPost(w, r)
+		}
+	})
 	mux.HandleFunc("/logout", app.Logout)
 
 	srv := &http.Server{

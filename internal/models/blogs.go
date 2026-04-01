@@ -161,3 +161,17 @@ func (m *BlogModel) GetAllComments() ([]*Comment, error) {
 	}
 	return comments, nil
 }
+
+func (m *BlogModel) GetSetting(key string) string {
+	var value string
+	err := m.DB.QueryRow(`SELECT value FROM settings WHERE key = ?`, key).Scan(&value)
+	if err != nil {
+		return ""
+	}
+	return value
+}
+
+func (m *BlogModel) UpdateSetting(key, value string) error {
+	_, err := m.DB.Exec(`UPDATE settings SET value = ? WHERE key = ?`, value, key)
+	return err
+}

@@ -1,0 +1,22 @@
+{{template "base" .}}
+{{define "title"}}Terminal Ayarları{{end}}
+{{define "main"}}
+<div class="admin-header">
+    <h2 class="section-title">>> TERMİNAL DOSYALARI (Ayarlar)</h2>
+    <a href="/admin" class="btn btn-sm">Geri Dön</a>
+</div>
+
+<div class="admin-section">
+    <form action="/admin/settings" method="POST">
+        <div class="form-group">
+            <label for="about_text">hakkimda.txt İçeriği (HTML formatı destekler)</label>
+            <textarea id="about_text" name="about_text" rows="6" required>{{.AboutText}}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="contact_text">iletisim.txt İçeriği (HTML formatı destekler)</label>
+            <textarea id="contact_text" name="contact_text" rows="6" required>{{.ContactText}}</textarea>
+        </div>
+        <button type="submit" class="btn">Ayarları Kaydet</button>
+    </form>
+</div>
+{{end}}
