@@ -2,9 +2,33 @@
 {{define "title"}}Admin Paneli{{end}}
 {{define "main"}}
 <div class="admin-header">
+    <audio id="bg-music" loop>
+        <source src="/static/admin-background.mp3" type="audio/mpeg">
+    </audio>
+
     <h2 style="margin: 0;">Admin Kontrol Paneli</h2>
     <a href="/logout" class="btn btn-danger">Çıkış Yap</a>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var audio = document.getElementById("bg-music");
+        audio.volume = 0.15;
+
+        // Sayfa yüklenir yüklenmez müziği çalmayı dene.
+        // Modern tarayıcılar kullanıcı etkileşimi olmadan sesin otomatik başlamasını engelleyebilir.
+        var playPromise = audio.play();
+
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                // Otomatik çalma başarısız olursa, konsola bir not düş ve
+                // kullanıcının sayfaya tıklamasını bekle. Bu, en uyumlu yöntemdir.
+                console.log("Otomatik çalma tarayıcı tarafından engellendi. Müzik için sayfaya tıklayın.");
+                document.body.addEventListener('click', function() { audio.play(); }, { once: true });
+            });
+        }
+    });
+</script>
 
 <div class="admin-section">
     <h3 style="margin-top:0; color:var(--primary);">Yeni Yazı Ekle</h3>

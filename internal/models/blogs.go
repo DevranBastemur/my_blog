@@ -5,16 +5,14 @@ import (
 	"time"
 )
 
-// Comment, veritabanındaki tek bir yorumu temsil eder
 type Comment struct {
 	ID        int
 	BlogID    int
-	BlogTitle string // Admin panelinde hangi bloğa ait olduğunu görmek için
+	BlogTitle string
 	Content   string
 	CreatedAt time.Time
 }
 
-// BlogPost, veritabanındaki tek bir blog yazısını temsil eder
 type BlogPost struct {
 	ID        int
 	Title     string
@@ -24,14 +22,11 @@ type BlogPost struct {
 	Comments  []*Comment
 }
 
-// BlogModel, veritabanı işlemlerini yürütecek yapıdır
 type BlogModel struct {
 	DB *sql.DB
 }
 
-// Yeni bir blog yazısı ekleme (İleride admin panelinde kullanacağız)
 func (m *BlogModel) Insert(title, content, imagePath string) (int, error) {
-	// Parametreli sorgu (?) kullanarak SQL Injection saldırılarını kesin olarak engelliyoruz
 	stmt := `INSERT INTO blogs (title, content, image_path, created_at) VALUES (?, ?, ?, ?)`
 
 	result, err := m.DB.Exec(stmt, title, content, imagePath, time.Now())
@@ -47,7 +42,6 @@ func (m *BlogModel) Insert(title, content, imagePath string) (int, error) {
 	return int(id), nil
 }
 
-// ID'ye göre tek bir blog yazısını detaylarıyla çekme (Yeni detay sayfası için)
 func (m *BlogModel) Get(id int) (*BlogPost, error) {
 	stmt := `SELECT id, title, content, image_path, created_at FROM blogs WHERE id = ?`
 	b := &BlogPost{}
@@ -59,7 +53,6 @@ func (m *BlogModel) Get(id int) (*BlogPost, error) {
 	return b, nil
 }
 
-// Tüm blog yazılarını çekme (Ana sayfada kullanacağız)
 func (m *BlogModel) Latest() ([]*BlogPost, error) {
 	stmt := `SELECT id, title, content, image_path, created_at FROM blogs ORDER BY created_at DESC LIMIT 10`
 
@@ -83,7 +76,6 @@ func (m *BlogModel) Latest() ([]*BlogPost, error) {
 	return blogs, nil
 }
 
-// Tüm blog yazılarını çekme (Admin panelinde tablo olarak listelemek için)
 func (m *BlogModel) All() ([]*BlogPost, error) {
 	stmt := `SELECT id, title, content, image_path, created_at FROM blogs ORDER BY created_at DESC`
 	rows, err := m.DB.Query(stmt)
@@ -104,24 +96,20 @@ func (m *BlogModel) All() ([]*BlogPost, error) {
 	return blogs, nil
 }
 
-// ID'ye göre blog yazısını güncelleme
 func (m *BlogModel) Update(id int, title, content, imagePath string) error {
 	stmt := `UPDATE blogs SET title = ?, content = ?, image_path = ? WHERE id = ?`
 	_, err := m.DB.Exec(stmt, title, content, imagePath, id)
 	return err
 }
 
-// ID'sine göre blog yazısını silme
 func (m *BlogModel) Delete(id int) error {
-	// Önce bloğa ait yorumları silelim
+
 	_, _ = m.DB.Exec(`DELETE FROM comments WHERE blog_id = ?`, id)
 
 	stmt := `DELETE FROM blogs WHERE id = ?`
 	_, err := m.DB.Exec(stmt, id)
 	return err
 }
-
-// --- YORUM (COMMENT) FONKSİYONLARI ---
 
 func (m *BlogModel) InsertComment(blogID int, content string) error {
 	stmt := `INSERT INTO comments (blog_id, content, created_at) VALUES (?, ?, ?)`
