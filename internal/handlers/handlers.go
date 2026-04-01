@@ -359,11 +359,7 @@ func uploadImage(r *http.Request, formKey string) (string, error) {
 
 	buff := make([]byte, 512)
 	_, _ = file.Read(buff)
-<<<<<<< HEAD
 	file.Seek(0, io.SeekStart)
-=======
-	file.Seek(0, io.SeekStart) 
->>>>>>> a9e182bbec6e1ed09973c84ad2f35b9f54df1c28
 
 	mimeType := http.DetectContentType(buff)
 	var ext string
