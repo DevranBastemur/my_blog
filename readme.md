@@ -26,7 +26,7 @@ Kullanıcılar blog yazılarını okuyabilir ve iz bırakabilir (yorum yapabilir
 
 
 ### 2. Yönetim Paneli (Admin Dashboard)
-Yöneticinin içeriklere müdahale ettiği, sildiği veya güncellediği güvenli alan.
+Yöneticinin içeriklere müdahale ettiği, sildiği veya güncellediği güvenli alandır.
 
 - **İçerik Ekleme:** Başlık, metin ve kapak görseli (Max 5MB) yükleme desteği.
 ![Yeni Yazı Ekleme] <img width="1770" height="742" alt="Ekran görüntüsü 2026-03-17 224744" src="https://github.com/user-attachments/assets/fd6da53f-f69e-4f9c-ba01-8225923430b2" />
